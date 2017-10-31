@@ -1,0 +1,57 @@
+---
+title: "Pre-processing of Flow Data"
+author: "Benjamin Gabriel"
+date: "10/10/2017"
+output: html_document
+---
+
+```{r sourcing, eval=FALSE, include=FALSE}
+source(file = "./scripts/00_loading_flow_data")
+```
+
+
+# TRANSFORMATION
+
+```{r performing biex transformation}
+lgcl <- estimateLogicle(fcsl.rki[[1]], colnames(fcsl.rki[[1]])[5:13]) # colnames(f)[indices] can select specific channels/fluorochromes for which the transformation should be calculated)
+fcsl.trans <- transform(fcsl.rki, lgcl)
+```
+
+# FILTERING BOUNDARY EVENTS
+
+```{r filtering for boundary events}
+# Constructing the boundary filter.
+bound.f <- boundaryFilter(x = c('FSC-A', 'SSC-A'),
+                          tolerance = .Machine$double.eps,
+                          side = 'both',
+                          filterId = 'ownbound')
+
+# Apply the boundary filter to the flowSet. This creates a filterResultList.
+fcsl.bound <- filter(x = fcsl.trans,
+                     filter = bound.f)
+
+# Showing the summary of the filterResultList.
+summary(fcsl.bound)
+
+# Subsetting the flowSet with the filterResultList.
+fcsl.f <- Subset(x = fcsl.trans,
+                 subset = fcsl.bound)
+```
+
+# WARPING
+
+```{r warping (warpSet()) of the fluorochromes}
+library(flowStats)
+fcsl.warped <- warpSet(x = fcsl.f,
+                       stains = c('FITC-A', 'PE-A', 'PerCP-A', 'PECy7-A', 'A647-A', 'A700-A', 'APCCy7-A', 'PacB-A', 'PacO-A'),
+                       grouping = NULL,
+                       monwrd = TRUE,
+                       subsample = NULL,
+                       peakNr = NULL,
+                       clipRange = 0.01,
+                       nbreaks = 11,
+                       # fres = ,
+                       bwFac = 2,
+                       warpFuns = FALSE,
+                       target = NULL)
+```

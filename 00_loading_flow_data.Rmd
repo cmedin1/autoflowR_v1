@@ -1,0 +1,56 @@
+---
+title: "Loading of Flow Data"
+author: "Benjamin Gabriel"
+date: "10/10/2017"
+output: html_document
+---
+
+```{r removal of environments}
+rm(list = ls())
+graphics.off()
+```
+
+> NOTE: Pre-processing of the dataset is neccessary before starting the gating! This pre-processing includes transformation and warping. It does not includes the boundary filtering. Boundary filtering can be performed with the GatingSet() function within the OpenCyto workflow.
+
+```{r installation and loading of packages / Bioconductor}
+source("https://bioconductor.org/biocLite.R")
+biocLite()
+```
+
+```{r installation / loading of openCyto}
+# biocLite('openCyto')
+library(openCyto)
+```
+
+```{r loading the flowSet}
+getwd() # check the path
+library(flowCore)
+fcsl.rki <- read.flowSet(
+                         files = NULL,
+                         path = "~/00_working_folder/openCyto_workflow/data/testing_phase_small",
+                         pattern = "*.fcs",
+                         # phenoData = list(name = 'TUBE NAME',
+                         #                  filename =  '$FIL',
+                         #                  threshold = 'THRESHOLD',
+                         #                  compensation = 'APPLY COMPENSATION',
+                         #                  experiment.name = 'EXPERIMENT NAME'),
+                         descriptions = ,
+                         # name.keyword = 'TUBE NAME',
+                         alter.names = FALSE, # this alters the names like FSC-A to FSC.A, replacing the dash and making the value more R readable
+                         transformation = 'linearize',
+                         which.lines = NULL,
+                         column.pattern = NULL,
+                         invert.pattern = NULL,
+                         decades = 0,
+                         sep = '\\t',
+                         as.is = TRUE,
+                         name = NULL,
+                         ncdf = FALSE,
+                         dataset = NULL,
+                         min.limit = NULL,
+                         truncate_max_range = TRUE,
+                         emptyValue = TRUE,
+                         ignore.text.offset = FALSE
+                         )
+```
+

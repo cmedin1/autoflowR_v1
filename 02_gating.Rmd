@@ -1,0 +1,62 @@
+---
+title: "Gating"
+author: "Benjamin Gabriel"
+date: "9/18/2017"
+output: html_document
+---
+
+```{r sourcing, eval=FALSE, include=FALSE}
+source(file = "./scripts/01_preprocessing_flow.Rmd")
+```
+
+# LOADING OF GATING STRATEGY
+
+```{r loading a gating template using OpenCyto()}
+library(openCyto)
+gt_tcell <- gatingTemplate(x = '~/00_working_folder/openCyto_workflow/scripts/auto_gate_template_4.txt')
+
+gt_tcell
+
+plot(gt_tcell)
+```
+
+# CREATING OF GATING SET
+
+```{r creating a GatingSet() using the compensated and transformed dataset; here: additionally warped}
+gs <- GatingSet(fcsl.warped)
+
+getNodes(gs[[1]])
+```
+
+# EXECUTING GATING STRATEGY
+
+```{r executing the gating strategy}
+gating(gt_tcell, gs)
+```
+
+# PLOTTING GATING STRATEGY (SCHEMATIC)
+
+```{r plotting the gating strategy}
+plot(gs[[1]])
+```
+
+# PLOTTING GATING STRATEGY (PLOTS)
+
+```{r}
+plotGate(gs[[2]], path=1)
+```
+
+```{r simple plotting}
+names(fcsl.single)
+
+quadGate.tmix(fr = fcsl.single.t,
+              channels = c('APCCy7-A','PerCP-A'),
+              K = 4,
+              usePrior = "no",
+              prior = list(NA),
+              quantile1 = 0.8,
+              quantile3 = 0.8,
+              trans = 0,
+              plot = TRUE)
+```
+
